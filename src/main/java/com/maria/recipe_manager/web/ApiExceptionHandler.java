@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
+    //pt 400
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String,Object>> handleValidation(MethodArgumentNotValidException ex, HttpServletRequest req){
 
@@ -48,12 +49,26 @@ public class ApiExceptionHandler {
         body.put("timestamp", Instant.now());
         body.put("status", 400);
         body.put("error", "Bad Request");
-        // Mesaj scurt și util pentru enum/JSON invalid
+        // pentru enum/JSON invalid
         body.put("message", ex.getMostSpecificCause() != null
                 ? ex.getMostSpecificCause().getMessage()
                 : "Malformed JSON or invalid value");
         body.put("path", req.getRequestURI());
 
         return ResponseEntity.badRequest().body(body);
+    }
+
+    //pt 404
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Map<String,Object>> handleNotFound(NotFoundException ex,HttpServletRequest req){
+
+        Map<String,Object> body=new LinkedHashMap<>();
+        body.put("timestamp", Instant.now().toString());
+        body.put("status", 404);
+        body.put("error", "Not Found");
+        body.put("message", ex.getMessage());
+        body.put("path", req.getRequestURI());
+
+        return ResponseEntity.status(404).body(body);
     }
 }

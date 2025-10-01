@@ -4,6 +4,7 @@ package com.maria.recipe_manager.service;
 import com.maria.recipe_manager.model.Recipe;
 import com.maria.recipe_manager.persistence.RecipeDao;
 import com.maria.recipe_manager.web.CreateRecipeRequest;
+import com.maria.recipe_manager.web.NotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -27,8 +28,18 @@ public class RecipeService {
         return recipeDao.save(r);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Recipe> listAll(){
         return recipeDao.findAll();
+    }
+
+    //pt 404
+    @Transactional(readOnly = true)
+    public Recipe getById(Long id){
+        Recipe r=recipeDao.findById(id);
+        if(r==null){
+            throw new NotFoundException("Recipe",id);
+        }
+        return r;
     }
 }

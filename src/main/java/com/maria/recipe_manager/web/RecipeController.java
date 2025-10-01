@@ -30,4 +30,11 @@ public class RecipeController {
     public List<Recipe> list(){
         return service.listAll();
     }
+
+    //endpoint pt un singur recipe
+    @GetMapping(value="/{id}", produces="application/json")
+    public Recipe getOne(@PathVariable Long id){ //leaga {id} din url de param metodei
+        return service.getById(id);
+    }
+
 }
