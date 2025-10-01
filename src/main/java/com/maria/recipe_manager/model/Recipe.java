@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
@@ -30,12 +31,11 @@ public class Recipe {
     @Column(name = "cook_time_minutes", nullable = false)
     private int cookTimeMinutes;
 
-    @Column(columnDefinition = "text", nullable = false)
-    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
+    @Column(columnDefinition = "text")
     private String steps;
 
-    @Column(name="created_at",insertable=false,updatable=false)
-    private LocalDateTime createdAt;
+    @Column(name="created_at",nullable=false,insertable=false,updatable=false)
+    private Instant createdAt;
 
     //getteri si setteri
     public Long getId(){return id;}
@@ -53,7 +53,7 @@ public class Recipe {
     public String getSteps() { return steps; }
     public void setSteps(String steps) { this.steps = steps; }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public Instant getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
 
 }

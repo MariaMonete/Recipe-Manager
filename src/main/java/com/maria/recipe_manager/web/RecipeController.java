@@ -20,13 +20,13 @@ public class RecipeController {
         this.service=service;
     }
 
-    @PostMapping
+    @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<Recipe> create(@Valid @RequestBody CreateRecipeRequest req){
         Recipe created= service.create(req);
         return ResponseEntity.created((URI.create("/api/recipes/"+created.getId()))).body(created);
     }
 
-    @GetMapping
+    @GetMapping(produces = "application/json")
     public List<Recipe> list(){
         return service.listAll();
     }

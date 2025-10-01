@@ -3,21 +3,24 @@ package com.maria.recipe_manager.web;
 //DTO pt request->validare la input
 
 import com.maria.recipe_manager.model.Difficulty;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 
 public class CreateRecipeRequest {
 
-    @NotBlank
+    @NotBlank(message = "name must not be blank")
+    @Size(max = 255, message = "name length must be <= 255")
     private String name;
 
-    @NotNull
+    @NotNull(message = "difficulty must not be blank")
+    @NotNull( message = "difficulty must be one of EASY, MEDIUM, HARD")
     private Difficulty difficulty;
 
-    @Min(1)
+    @NotNull(message = "cookTimeMinutes is required")
+    @Min(value = 1, message = "cookTimeMinutes must be >= 1")
+    @Max(value = 1440, message = "cookTimeMinutes must be <= 1440")
     private int cookTimeMinutes;
 
+    @Size(max = 10000, message = "steps length must be <= 10000")
     private String steps;
 
     // getters/setters
