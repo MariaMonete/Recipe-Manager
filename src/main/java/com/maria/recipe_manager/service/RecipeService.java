@@ -42,4 +42,14 @@ public class RecipeService {
         }
         return r;
     }
+
+    //expunere operatie delete
+    @Transactional
+    public void delete(Long id){
+        boolean removed=recipeDao.deleteById(id);
+        if(!removed){
+            //daca nu exista, intoarcem 404
+            throw new NotFoundException("Recipe",id);
+        }
+    }
 }

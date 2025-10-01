@@ -37,4 +37,10 @@ public class RecipeController {
         return service.getById(id);
     }
 
+    //endpoint pt delete
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }

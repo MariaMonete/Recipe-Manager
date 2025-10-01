@@ -5,6 +5,7 @@ import com.maria.recipe_manager.model.Recipe;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -29,5 +30,16 @@ public class RecipeDao {
 
     public List<Recipe> findAll(){
         return em.createQuery("select r from Recipe r order by r.id", Recipe.class).getResultList();
+    }
+
+    //delete
+    @Transactional
+    public boolean deleteById(Long id){
+        Recipe r=em.find(Recipe.class,id); //cautam entitatea
+        if(r==null){
+            return false; //nu exista
+        }
+        em.remove(r); //jpa va emite delete
+        return true;
     }
 }
