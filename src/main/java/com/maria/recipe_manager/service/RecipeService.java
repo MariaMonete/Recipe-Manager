@@ -5,8 +5,11 @@ import com.maria.recipe_manager.model.Recipe;
 import com.maria.recipe_manager.persistence.RecipeDao;
 import com.maria.recipe_manager.web.CreateRecipeRequest;
 import com.maria.recipe_manager.web.NotFoundException;
+import com.maria.recipe_manager.web.PatchRecipeRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -52,7 +55,7 @@ public class RecipeService {
             throw new NotFoundException("Recipe",id);
         }
     }
-    //update->vedem ca exista si se face validare pe campuri
+    //update PUT->vedem ca exista si se face validare pe campuri
     @Transactional
     public Recipe update(Long id, CreateRecipeRequest req){
         Recipe r=recipeDao.findById(id);
@@ -64,6 +67,30 @@ public class RecipeService {
         r.setDifficulty(req.getDifficulty());
         r.setCookTimeMinutes(req.getCookTimeMinutes());
         r.setSteps(req.getSteps());
+        return r;
+    }
+
+    //update PATCH
+    @Transactional
+    public Recipe patch(Long id, PatchRecipeRequest req){
+        Recipe r=recipeDao.findById(id);
+        if(r==null){
+            throw new NotFoundException("Recipe",id);
+        }
+        //validari campuri not null
+        if(req.getName()!=null){
+            r.setName(req.getName().trim());
+        }
+        if(req.getDifficulty()!=null){
+            r.setDifficulty(req.getDifficulty());
+        }
+        if(req.getCookTimeMinutes()!=null){
+            r.setCookTimeMinutes(req.getCookTimeMinutes());
+        }
+        if(req.getSteps()!=null){
+            r.setSteps(req.getSteps());
+        }
+
         return r;
     }
 }

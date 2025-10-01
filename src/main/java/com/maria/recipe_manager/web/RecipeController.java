@@ -44,10 +44,17 @@ public class RecipeController {
         return ResponseEntity.noContent().build();
     }
 
-    //endpoint updatec- cu put
+    //endpoint update- cu put
     @PutMapping(value="/{id}",consumes="application/json",produces = "application/json")
     public ResponseEntity<Recipe> update(@PathVariable Long id, @Valid @RequestBody CreateRecipeRequest req){
         Recipe updated=service.update(id,req);
+        return ResponseEntity.ok(updated);
+    }
+
+    //endpoint update - cu patch
+    @PatchMapping(value = "/{id}",consumes="application/json",produces="application/json")
+    public ResponseEntity<Recipe> patch(@PathVariable Long id, @Valid @RequestBody PatchRecipeRequest req){
+        Recipe updated= service.patch(id,req);
         return ResponseEntity.ok(updated);
     }
 }
