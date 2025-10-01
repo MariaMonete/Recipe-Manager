@@ -52,4 +52,18 @@ public class RecipeService {
             throw new NotFoundException("Recipe",id);
         }
     }
+    //update->vedem ca exista si se face validare pe campuri
+    @Transactional
+    public Recipe update(Long id, CreateRecipeRequest req){
+        Recipe r=recipeDao.findById(id);
+        if(r==null){
+            throw new NotFoundException("Recipe",id);
+        }
+        //setam campurile
+        r.setName(req.getName());
+        r.setDifficulty(req.getDifficulty());
+        r.setCookTimeMinutes(req.getCookTimeMinutes());
+        r.setSteps(req.getSteps());
+        return r;
+    }
 }
