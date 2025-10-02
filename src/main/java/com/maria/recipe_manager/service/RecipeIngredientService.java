@@ -16,61 +16,56 @@ import java.util.List;
 
 @Service
 public class RecipeIngredientService {
-    private final RecipeDao recipeDao;
-    private final IngredientDao ingredientDao;
-    private final RecipeIngredientDao linkDao;
+    private final RecipeIngredientDao dao;
 
-    public RecipeIngredientService(RecipeDao recipeDao,IngredientDao ingredientDao,RecipeIngredientDao linkDao){
-        this.recipeDao=recipeDao;
-        this.ingredientDao=ingredientDao;
-        this.linkDao=linkDao;
+    public RecipeIngredientService(RecipeIngredientDao linkDao){
+        this.dao=linkDao;
     }
 
     @Transactional
-    public RecipeIngredientResponse addOrUpdate(Long recipeId, AddIngredientToRecipeRequest req){
-        Recipe recipe=recipeDao.findById(recipeId);
-        if(recipe==null) throw new IllegalArgumentException("recipe not found");
+    public RecipeIngredient add(Long recipeId, AddIngredientToRecipeRequest req) {
+        var recipe = dao.mustFindRecipe(recipeId);
+        var ingredient = dao.mustFindIngredient(req.getIngredientId());
 
-        Ingredient ingredient=ingredientDao.findById(req.getIngredientId());
-        if(ingredient==null) throw new IllegalArgumentException("ingredient not found");
-
-        RecipeIngredient link=linkDao.findLink(recipeId,req.getIngredientId());
-        if(link==null){
-            link=new RecipeIngredient();
-            link.setRecipe(recipe);
-            link.setIngredient(ingredient);
+        if (dao.existsByRecipeAndIngredient(recipeId, req.getIngredientId())) {
+            throw new IllegalArgumentException("Ingredient already added to recipe");
         }
-        link.setQuantity(req.getQuantity());
 
-        if(link.getId()==null) linkDao.save(link);
-
-        return new RecipeIngredientResponse(ingredient.getId(), ingredient.getName(), ingredient.getUnit(), link.getQuantity());
+        var ri = new RecipeIngredient();
+        ri.setRecipe(recipe);
+        ri.setIngredient(ingredient);
+        ri.setQuantity(req.getQuantity());
+        return dao.save(ri);
     }
 
     @Transactional(readOnly = true)
-    public List<RecipeIngredientResponse> list(Long recipeId){
-        return linkDao.listByRecipe(recipeId).stream()
-                .map(ri->new RecipeIngredientResponse(
-                        ri.getIngredient().getId(),
-                        ri.getIngredient().getName(),
-                        ri.getIngredient().getUnit(),
-                        ri.getQuantity()
-                )).toList();
+    public List<RecipeIngredientResponse> list(Long recipeId) {
+        return dao.findAllRowsForRecipe(recipeId).stream()
+                .map(r -> new RecipeIngredientResponse(
+                        (Long) r[0], // ri.id
+                        (Long) r[1], // ingredientId
+                        (String) r[2], // ingredientName
+                        (String) r[3], // unit
+                        (java.math.BigDecimal) r[4] // quantity
+                ))
+                .toList();
     }
 
     @Transactional
-    public boolean updateQuantity(Long recipeId, Long ingredientId, UpdateRecipeIngredientRequest req){
-        RecipeIngredient link=linkDao.findLink(recipeId,ingredientId);
-        if(link==null) return false;
-        link.setQuantity(req.getQuantity());
-        return true;
+    public void updateQuantity(Long recipeId, Long riId, UpdateRecipeIngredientRequest req) {
+        var ri = dao.findById(riId);
+        if (ri == null || !ri.getRecipe().getId().equals(recipeId)) {
+            throw new IllegalArgumentException("RecipeIngredient not found for this recipe");
+        }
+        dao.updateQuantity(riId, req.getQuantity());
     }
 
     @Transactional
-    public boolean remove(Long recipeId, Long ingredientId){
-        RecipeIngredient link=linkDao.findLink(recipeId,ingredientId);
-        if(link==null) return false;
-        linkDao.delete(link);
-        return true;
+    public void delete(Long recipeId, Long riId) {
+        var ri = dao.findById(riId);
+        if (ri == null || !ri.getRecipe().getId().equals(recipeId)) {
+            throw new IllegalArgumentException("RecipeIngredient not found for this recipe");
+        }
+        dao.deleteById(riId);
     }
 }

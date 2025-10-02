@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -23,22 +24,24 @@ public class RecipeIngredientController {
 
     //endpoint POST
     @PostMapping(consumes = "application/json", produces="application/json")
-    public ResponseEntity<RecipeIngredientResponse> addOrUpdate(@PathVariable Long recipeId, @Valid @RequestBody AddIngredientToRecipeRequest req){
-        var response=service.addOrUpdate(recipeId,req);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<RecipeIngredient> addOrUpdate(@PathVariable Long recipeId, @Valid @RequestBody AddIngredientToRecipeRequest req){
+        var created=service.add(recipeId,req);
+        return ResponseEntity
+                .created(URI.create("/api/recipes/" + recipeId + "/ingredients/" + created.getId()))
+                .body(created);
     }
 
     //endpoint PATCH
-    @PatchMapping(path="/{ingredientId}",consumes="application/json")
-    public ResponseEntity<Void> updateQty(@PathVariable Long recipeId, @PathVariable Long ingredientId, @Valid @RequestBody UpdateRecipeIngredientRequest req){
-        boolean ok=service.updateQuantity(recipeId,ingredientId,req);
-        return ok ? ResponseEntity.noContent().build():ResponseEntity.notFound().build();
+    @PatchMapping(path="/{riId}",consumes="application/json")
+    public ResponseEntity<Void> updateQuantity(@PathVariable Long recipeId, @PathVariable Long riId, @Valid @RequestBody UpdateRecipeIngredientRequest req) {
+        service.updateQuantity(recipeId, riId, req);
+        return ResponseEntity.noContent().build();
     }
 
     //endpoint DELETE
-    @DeleteMapping("/{ingredientId}")
-    public ResponseEntity<Void> remove(@PathVariable Long recipeId, @PathVariable Long ingredientId){
-        boolean ok= service.remove(recipeId,ingredientId);
-        return ok ? ResponseEntity.noContent().build():ResponseEntity.notFound().build();
+    @DeleteMapping("/{riId}")
+    public ResponseEntity<Void> delete(@PathVariable Long recipeId, @PathVariable Long riId) {
+        service.delete(recipeId, riId);
+        return ResponseEntity.noContent().build();
     }
 }

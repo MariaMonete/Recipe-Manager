@@ -13,14 +13,14 @@ public class RecipeIngredient {
     private Long id;
 
     @ManyToOne(optional = false,fetch=FetchType.LAZY)
-    @JoinColumn(name="recipe_id",nullable = false)
+    @JoinColumn(name="recipe_id",nullable = false, foreignKey = @ForeignKey(name = "fk_ri_recipe"))
     private Recipe recipe;
 
     @ManyToOne(optional = false,fetch = FetchType.LAZY)
-    @JoinColumn(name="ingredient_id",nullable = false)
+    @JoinColumn(name="ingredient_id",nullable = false,foreignKey = @ForeignKey(name = "fk_ri_ingredient"))
     private Ingredient ingredient;
 
-    @DecimalMin("0.01")
+    @DecimalMin(value="0.01",message = "quantity must be > 0")
     @Column(nullable = false,precision = 10,scale = 2)
     private BigDecimal quantity;
 
