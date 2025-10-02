@@ -18,6 +18,9 @@ public class IngredientService {
 
     @Transactional
     public Ingredient create(CreateIngredientRequest req){
+        if (dao.existsByNameIgnoreCase(req.getName())) {
+            throw new IllegalArgumentException("ingredient name already exists");
+        }
         Ingredient i=new Ingredient();
         i.setName(req.getName());
         i.setUnit(req.getUnit());

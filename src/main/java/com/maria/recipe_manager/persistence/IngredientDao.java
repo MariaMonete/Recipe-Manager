@@ -30,4 +30,15 @@ public class IngredientDao {
     public void delete(Ingredient i){
         em.remove(i);
     }
+
+    public boolean existsByNameIgnoreCase(String name) {//sa nu avem ingrediente cu acelasi nume
+        var list = em.createQuery(
+                        "select 1 from Ingredient i where lower(i.name) = lower(:n)",
+                        Integer.class
+                )
+                .setParameter("n", name)
+                .setMaxResults(1)
+                .getResultList();
+        return !list.isEmpty();
+    }
 }

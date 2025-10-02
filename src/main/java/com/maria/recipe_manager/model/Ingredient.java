@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name="ingredients")
+@Table(name="ingredients", uniqueConstraints = @UniqueConstraint(name="uk_ingredient_name", columnNames = "name"))
 public class Ingredient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
