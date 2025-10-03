@@ -28,7 +28,7 @@ public class RecipeIngredientService {
         var ingredient = dao.mustFindIngredient(req.getIngredientId());
 
         if (dao.existsByRecipeAndIngredient(recipeId, req.getIngredientId())) {
-            throw new IllegalArgumentException("Ingredient already added to recipe");
+            throw new IllegalStateException("Ingredient already added to recipe");
         }
 
         var ri = new RecipeIngredient();
