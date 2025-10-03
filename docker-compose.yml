@@ -16,5 +16,23 @@ services:
       #   interval: 10s
       #   timeout: 5s
       #   retries: 5
+  recipe-manager:
+    image: recipe-manager
+    container_name: recipe-manager
+    build:
+      context: .
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - recipe-manager
 volumes:
   pgdata_recipe:
