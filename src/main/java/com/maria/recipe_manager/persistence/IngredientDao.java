@@ -41,4 +41,22 @@ public class IngredientDao {
                 .getResultList();
         return !list.isEmpty();
     }
+
+    public Ingredient merge(Ingredient i){
+        return em.merge(i);
+    }
+
+    public void deleteById(Long id){
+        var ing=em.find(Ingredient.class,id);
+        if(ing!=null) em.remove(ing);
+    }
+
+    public boolean existsOtherWithName(Long id, String name){
+        var list=em.createQuery("select 1 from Ingredient i where lower(i.name)=lower(:n) and i.id <> :id", Integer.class)
+                .setParameter("n",name)
+                .setParameter("id",id)
+                .setMaxResults(1)
+                .getResultList();
+        return !list.isEmpty();
+    }
 }

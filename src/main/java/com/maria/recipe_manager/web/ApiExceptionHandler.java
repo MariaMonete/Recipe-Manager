@@ -87,8 +87,14 @@ public class ApiExceptionHandler {
 
     // 400 - pentru IllegalArgumentException din servicii (ex: cantitate negativă, id nevalid logic)
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Map<String,Object>> handleIllegalArgument(IllegalArgumentException ex, HttpServletRequest req){
-        return ResponseEntity.badRequest().body(base(400, "Bad Request", ex.getMessage(), req));
+    public ResponseEntity<Map<String,Object>> handleIllegalArg(IllegalArgumentException ex, HttpServletRequest req) {
+        Map<String,Object> body = new LinkedHashMap<>();
+        body.put("timestamp", Instant.now());
+        body.put("status", 400);
+        body.put("error", "Bad Request");
+        body.put("message", ex.getMessage());
+        body.put("path", req.getRequestURI());
+        return ResponseEntity.badRequest().body(body);
     }
 
     // 409 - încălcări de constrângeri DB (unique, FK, etc.)
@@ -113,4 +119,17 @@ public class ApiExceptionHandler {
         body.put("path", req.getRequestURI());
         return body;
     }
+
+    // 409
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<Map<String,Object>> handleConflict(IllegalStateException ex, HttpServletRequest req) {
+        Map<String,Object> body = new LinkedHashMap<>();
+        body.put("timestamp", Instant.now());
+        body.put("status", 409);
+        body.put("error", "Conflict");
+        body.put("message", ex.getMessage());
+        body.put("path", req.getRequestURI());
+        return ResponseEntity.status(409).body(body);
+    }
+
 }

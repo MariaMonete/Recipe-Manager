@@ -29,10 +29,19 @@ public class IngredientController {
         return service.listAll();
     }
 
+    @GetMapping(path="/{id}",produces="application/json")
+    public Ingredient getOne(@PathVariable Long id){
+        return service.get(id);
+    }
+
+    @PutMapping(path = "/{id}",consumes = "application/json", produces="application/json")
+    public Ingredient update(@PathVariable Long id, @Valid @RequestBody UpdateIngredientRequest req){
+        return service.update(id,req);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id){
-        boolean existed= service.deleteById(id);
-        return existed ? ResponseEntity.noContent().build()
-                        : ResponseEntity.notFound().build();
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

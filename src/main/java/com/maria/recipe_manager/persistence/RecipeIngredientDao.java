@@ -75,4 +75,10 @@ public class RecipeIngredientDao {
         if (managed != null) em.remove(managed);
     }
 
+    public long countUsageOfIngredients(Long ingredientId){
+        return em.createQuery("select count(ri) from RecipeIngredient ri where ri.ingredient.id = :id", Long.class)
+                .setParameter("id",ingredientId)
+                .getSingleResult();
+    }
+
 }
