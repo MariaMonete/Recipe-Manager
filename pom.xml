@@ -84,9 +84,38 @@
     <build>
         <plugins>
             <!-- necesar pentru comanda spring-boot:run și packaging -->
-            <plugin>
+            <!--<plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>-->
+<!-- elimin pt a invata rularea aplicatiei ca una de Java clasic           -->
+
+<!--adaug aceste 2 pluginuri inlocuitoare-->
+<!--            -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.5.0</version>
+                <configuration>
+                    <mainClass>com.maria.recipe_manager.RecipeManagerApplication</mainClass>
+                </configuration>
+            </plugin>
+<!--pt copierea ependentelor in target/dependency/-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.6.1</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals><goal>copy-dependencies</goal></goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/dependency</outputDirectory>
+                            <includeScope>runtime</includeScope>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- asigură compilarea pe Java 21 -->

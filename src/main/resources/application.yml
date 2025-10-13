@@ -6,6 +6,7 @@ spring:
     name: recipe-manager
 
   datasource:
+    # valoarea implicita cand rulezi IN CONTAINER (pe reteaua compose)
     url: jdbc:postgresql://pg_recipe:5432/recipedb
     username: recipe
     password: recipe
@@ -13,7 +14,15 @@ spring:
     hikari:
       maximum-pool-size: 10
       minimum-idle: 1
-      connection-timeout: 30000   # ms, cat asteapta pentru o conexiune
+      connection-timeout: 30000
+
+  jpa:
+    hibernate:
+      ddl-auto: none        # schema controlata de Flyway
+    open-in-view: false
+    properties:
+      hibernate.show_sql: true
+      hibernate.format_sql: true
 
   flyway:
     enabled: true
@@ -28,25 +37,16 @@ management:
   endpoint:
     health:
       probes:
-        enabled: true   # expune /actuator/health/liveness si /actuator/health/readiness
+        enabled: true
   metrics:
     tags:
       application: ${spring.application.name}
 
-  jpa:
-    hibernate:
-      ddl-auto: none        # schema e controlată de Flyway, nu de Hibernate
-    open-in-view: false     # închide sesiunea după layer-ul web
-    properties:
-      hibernate.show_sql: true
-      hibernate.format_sql: true
-
-# optional: log minim (utile la inceput)
-logging:
-  level:
-    org.springframework.boot.autoconfigure: INFO
-    org.springframework.boot.autoconfigure.flyway: DEBUG
-    org.flywaydb.core.internal.command: INFO
-    org.hibernate: WARN
-
-
+---
+# suprascriere doar cand rulezi pe HOST (Java local)
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:postgresql://localhost:5432/recipedb

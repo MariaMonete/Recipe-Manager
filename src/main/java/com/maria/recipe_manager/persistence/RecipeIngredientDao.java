@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class RecipeIngredientDao {
@@ -79,6 +80,20 @@ public class RecipeIngredientDao {
         return em.createQuery("select count(ri) from RecipeIngredient ri where ri.ingredient.id = :id", Long.class)
                 .setParameter("id",ingredientId)
                 .getSingleResult();
+    }
+
+    public Optional<Object[]> findOneRowByRiIdAndRecipeId(Long recipeId, Long riId) {
+        return em.createQuery("""
+            select ri.id, ing.id, ing.name, ing.unit, ri.quantity
+            from RecipeIngredient ri
+            join ri.ingredient ing
+            where ri.id = :ri and ri.recipe.id = :r
+            """, Object[].class)
+                .setParameter("ri", riId)
+                .setParameter("r", recipeId)
+                .setMaxResults(1)
+                .getResultStream()
+                .findFirst();
     }
 
 }

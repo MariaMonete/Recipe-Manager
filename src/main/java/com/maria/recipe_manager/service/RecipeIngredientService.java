@@ -7,6 +7,7 @@ import com.maria.recipe_manager.persistence.IngredientDao;
 import com.maria.recipe_manager.persistence.RecipeDao;
 import com.maria.recipe_manager.persistence.RecipeIngredientDao;
 import com.maria.recipe_manager.web.AddIngredientToRecipeRequest;
+import com.maria.recipe_manager.web.NotFoundException;
 import com.maria.recipe_manager.web.RecipeIngredientResponse;
 import com.maria.recipe_manager.web.UpdateRecipeIngredientRequest;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,23 @@ public class RecipeIngredientService {
         ri.setQuantity(req.getQuantity());
         return dao.save(ri);
     }
+
+    @Transactional(readOnly = true)
+    public RecipeIngredientResponse getOneByRiId(Long recipeId, Long riId) {
+        var row = dao.findOneRowByRiIdAndRecipeId(recipeId, riId)
+                .orElseThrow(() ->
+                        new NotFoundException("RecipeIngredient " ,riId));
+
+        // row = { ri.id, ing.id, ing.name, ing.unit, ri.quantity }
+        return new RecipeIngredientResponse(
+                ((Number) row[0]).longValue(),
+                ((Number) row[1]).longValue(),
+                (String) row[2],
+                (String) row[3],
+                (java.math.BigDecimal) row[4]
+        );
+    }
+
 
     @Transactional(readOnly = true)
     public List<RecipeIngredientResponse> list(Long recipeId) {

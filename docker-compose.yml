@@ -11,11 +11,11 @@ services:
       - "5432:5432"
     volumes:
       - pgdata_recipe:/var/lib/postgresql/data
-      # healthcheck:
-      #   test: ["CMD-SHELL", "pg_isready -U recipe -d recipedb"]
-      #   interval: 10s
-      #   timeout: 5s
-      #   retries: 5
+    healthcheck:
+         test: ["CMD-SHELL", "pg_isready -U recipe -d recipedb"]
+         interval: 5s
+         timeout: 3s
+         retries: 10
   recipe-manager:
     image: recipe-manager
     container_name: recipe-manager
@@ -25,6 +25,8 @@ services:
       - "8081:8081"
     depends_on:
       - postgres
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus

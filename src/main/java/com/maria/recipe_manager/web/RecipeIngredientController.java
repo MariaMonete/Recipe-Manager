@@ -22,6 +22,13 @@ public class RecipeIngredientController {
         return service.list(recipeId);
     }
 
+    @GetMapping(path = "/{riId}", produces = "application/json")
+    public RecipeIngredientResponse getOneByRiId(
+            @PathVariable("recipeId") Long recipeId,
+            @PathVariable("riId") Long riId) {
+        return service.getOneByRiId(recipeId, riId);
+    }
+
     //endpoint POST
     @PostMapping(consumes = "application/json", produces="application/json")
     public ResponseEntity<RecipeIngredient> addOrUpdate(@PathVariable Long recipeId, @Valid @RequestBody AddIngredientToRecipeRequest req){
