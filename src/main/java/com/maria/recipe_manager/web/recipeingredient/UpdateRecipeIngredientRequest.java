@@ -1,4 +1,4 @@
-package com.maria.recipe_manager.web;
+package com.maria.recipe_manager.web.recipeingredient;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;

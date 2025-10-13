@@ -7,9 +7,9 @@ spring:
 
   datasource:
     # valoarea implicita cand rulezi IN CONTAINER (pe reteaua compose)
-    url: jdbc:postgresql://pg_recipe:5432/recipedb
-    username: recipe
-    password: recipe
+    url: jdbc:postgresql://${DB_HOST:pg_recipe}:${DB_PORT:5432}/${DB_NAME:recipedb}
+    username: ${DB_USER:recipe}
+    password: ${DB_PASSWORD:recipe}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
@@ -49,4 +49,6 @@ spring:
     activate:
       on-profile: local
   datasource:
-    url: jdbc:postgresql://localhost:5432/recipedb
+    url: jdbc:postgresql://${DB_HOST_LOCAL:localhost}:${DB_PORT_LOCAL:5432}/${DB_NAME:recipedb}
+    username: ${DB_USER_LOCAL:${DB_USER:recipe}}
+    password: ${DB_PASSWORD_LOCAL:${DB_PASSWORD:recipe}}

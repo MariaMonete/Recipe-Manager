@@ -1,4 +1,4 @@
-package com.maria.recipe_manager.web;
+package com.maria.recipe_manager.web.recipeingredient;
 
 import java.math.BigDecimal;
 

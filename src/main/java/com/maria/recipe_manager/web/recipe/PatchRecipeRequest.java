@@ -1,4 +1,4 @@
-package com.maria.recipe_manager.web;
+package com.maria.recipe_manager.web.recipe;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.maria.recipe_manager.model.Difficulty;

@@ -1,15 +1,11 @@
 package com.maria.recipe_manager.service;
 
-import com.maria.recipe_manager.model.Ingredient;
-import com.maria.recipe_manager.model.Recipe;
 import com.maria.recipe_manager.model.RecipeIngredient;
-import com.maria.recipe_manager.persistence.IngredientDao;
-import com.maria.recipe_manager.persistence.RecipeDao;
 import com.maria.recipe_manager.persistence.RecipeIngredientDao;
-import com.maria.recipe_manager.web.AddIngredientToRecipeRequest;
-import com.maria.recipe_manager.web.NotFoundException;
-import com.maria.recipe_manager.web.RecipeIngredientResponse;
-import com.maria.recipe_manager.web.UpdateRecipeIngredientRequest;
+import com.maria.recipe_manager.web.recipeingredient.AddIngredientToRecipeRequest;
+import com.maria.recipe_manager.web.exception.NotFoundException;
+import com.maria.recipe_manager.web.recipeingredient.RecipeIngredientResponse;
+import com.maria.recipe_manager.web.recipeingredient.UpdateRecipeIngredientRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

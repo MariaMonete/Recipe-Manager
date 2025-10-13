@@ -3,13 +3,11 @@ package com.maria.recipe_manager.service;
 
 import com.maria.recipe_manager.model.Recipe;
 import com.maria.recipe_manager.persistence.RecipeDao;
-import com.maria.recipe_manager.web.CreateRecipeRequest;
-import com.maria.recipe_manager.web.NotFoundException;
-import com.maria.recipe_manager.web.PatchRecipeRequest;
-import org.springframework.http.HttpStatus;
+import com.maria.recipe_manager.web.recipe.CreateRecipeRequest;
+import com.maria.recipe_manager.web.exception.NotFoundException;
+import com.maria.recipe_manager.web.recipe.PatchRecipeRequest;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 

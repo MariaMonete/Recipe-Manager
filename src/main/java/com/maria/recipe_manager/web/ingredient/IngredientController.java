@@ -1,4 +1,4 @@
-package com.maria.recipe_manager.web;
+package com.maria.recipe_manager.web.ingredient;
 
 import com.maria.recipe_manager.model.Ingredient;
 import com.maria.recipe_manager.service.IngredientService;
