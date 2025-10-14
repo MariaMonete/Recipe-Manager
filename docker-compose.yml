@@ -1,36 +1,47 @@
-version: "3.8"
 services:
   postgres:
     image: postgres:16.4
     container_name: pg_recipe
+    env_file: .env
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-recipedb}
+      POSTGRES_USER: ${POSTGRES_USER:-recipe}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-recipe}
     ports:
       - "${DB_PORT:-5432}:5432"
     volumes:
       - pgdata_recipe:/var/lib/postgresql/data
     healthcheck:
-         test: ["CMD-SHELL", "pg_isready -U recipe -d recipedb"]
-         interval: 5s
-         timeout: 3s
-         retries: 10
+      # atenție la $${...} (dublu $) ca să fie expandate în container, nu de Compose
+      test: ["CMD-SHELL", "pg_isready -h localhost -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
   recipe-manager:
-    image: recipe-manager
-    container_name: recipe-manager
     build:
       context: .
+    image: recipe-manager
+    container_name: recipe-manager
+    env_file: .env
     ports:
       - "${APP_PORT:-8081}:8081"
-    depends_on:
-      - postgres
     environment:
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-      DB_NAME: ${DB_NAME}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
+      SPRING_PROFILES_ACTIVE: docker
+      # (opțional, dar recomandat) setează explicit datasource-ul din env
+      SPRING_DATASOURCE_URL: jdbc:postgresql://pg_recipe:5432/${POSTGRES_DB:-recipedb}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-recipe}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-recipe}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      # NECESITĂ curl (sau wget) în imaginea aplicației
+      test: ["CMD", "curl", "-fsS", "http://localhost:8081/actuator/health/readiness"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -39,6 +50,8 @@ services:
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     depends_on:
-      - recipe-manager
+      recipe-manager:
+        condition: service_healthy
+
 volumes:
   pgdata_recipe:

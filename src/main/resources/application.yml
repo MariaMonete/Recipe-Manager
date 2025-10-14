@@ -36,8 +36,18 @@ management:
         include: health,info,metrics,prometheus
   endpoint:
     health:
+      group:
+        readiness:
+          include: db
+        liveness:
+          include: livenessState
       probes:
         enabled: true
+  health:
+    flyway:
+      enabled: true
+    db:
+      enabled: true
   metrics:
     tags:
       application: ${spring.application.name}
