@@ -7,6 +7,7 @@ import com.maria.recipe_manager.web.exception.ApiExceptionHandler;
 import com.maria.recipe_manager.web.exception.NotFoundException;
 import com.maria.recipe_manager.web.ingredient.CreateIngredientRequest;
 import com.maria.recipe_manager.web.ingredient.IngredientController;
+import com.maria.recipe_manager.web.ingredient.UpdateIngredientRequest;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -77,6 +79,30 @@ public class IngredientControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(om.writeValueAsBytes(req)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void update_put_200() throws Exception {
+        var req = new UpdateIngredientRequest();
+        req.setName("salt"); req.setUnit("g");
+
+        var updated = new Ingredient();
+        updated.setId(5L); updated.setName("salt"); updated.setUnit("g");
+        Mockito.when(service.update(eq(5L), any())).thenReturn(updated);
+
+        mvc.perform(put("/api/ingredients/5")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(om.writeValueAsBytes(req)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(5))
+                .andExpect(jsonPath("$.name").value("salt"));
+    }
+
+    @Test
+    void delete_204() throws Exception {
+        mvc.perform(delete("/api/ingredients/5"))
+                .andExpect(status().isNoContent());
+        Mockito.verify(service).delete(5L);
     }
 
 }
