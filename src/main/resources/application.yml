@@ -51,6 +51,11 @@ management:
   metrics:
     tags:
       application: ${spring.application.name}
+    distribution:
+      percentiles-histogram: #adaugam histograme
+        http.server.requests: true
+      sla:
+        http.server.requests: 100ms,300ms,500ms,1s,2s
 
 ---
 # suprascriere doar cand rulezi pe HOST (Java local)
