@@ -67,4 +67,16 @@ public class IngredientControllerTest {
                 .andExpect(jsonPath("$.id").value(5));
     }
 
+    @Test
+    void create_400_whenNameBlank() throws Exception {
+        var req = new CreateIngredientRequest();
+        req.setName("   ");           // invalid (@NotBlank)
+        req.setUnit("ml");
+
+        mvc.perform(post("/api/ingredients")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(om.writeValueAsBytes(req)))
+                .andExpect(status().isBadRequest());
+    }
+
 }
