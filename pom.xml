@@ -131,17 +131,22 @@
             </plugin>-->
 <!-- elimin pt a invata rularea aplicatiei ca una de Java clasic           -->
 
-<!--adaug aceste 2 pluginuri inlocuitoare-->
-<!--            -->
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>3.5.0</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
                 <configuration>
-                    <mainClass>com.maria.recipe_manager.RecipeManagerApplication</mainClass>
+                    <archive>
+                        <!--Punem in manifest clasa main si class path-ul, si ca toate dependentele vor sta in lib/ langa JAR-->
+                        <manifest>
+                            <mainClass>com.maria.recipe_manager.RecipeManagerApplication</mainClass>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                        </manifest>
+                    </archive>
                 </configuration>
             </plugin>
-<!--pt copierea ependentelor in target/dependency/-->
+            <!--acest plugin copiaza dependentele in target/lib-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -150,9 +155,13 @@
                     <execution>
                         <id>copy-dependencies</id>
                         <phase>package</phase>
-                        <goals><goal>copy-dependencies</goal></goals>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/dependency</outputDirectory>
+                            <!-- Trebuie să corespundă cu classpathPrefix=lib/ -->
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <!-- runtime = include și dependențele de runtime (ex.: driverul Postgres) -->
                             <includeScope>runtime</includeScope>
                         </configuration>
                     </execution>

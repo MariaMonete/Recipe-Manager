@@ -12,6 +12,17 @@ public class IngredientDao {
     @PersistenceContext
     private EntityManager em;
 
+    // TODO 1:
+    // @Query
+    // @NamedQuery
+    // @NativeQuery // pe entitati
+
+    // TODO 2: spring data jpa cu CrudRepository
+
+    // TODO 3: use scheduled jobs. la fiecare ora, vreau un log cu cate ingrediente ai in baza de date.
+
+    // TODO: integrare cu rabbitmq pentru primit retete noi.
+
     public Ingredient save(Ingredient i){
         em.persist(i);
         em.flush();

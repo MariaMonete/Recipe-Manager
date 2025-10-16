@@ -12,11 +12,11 @@ services:
     volumes:
       - pgdata_recipe:/var/lib/postgresql/data
     healthcheck:
-      # atenție la $${...} (dublu $) ca să fie expandate în container, nu de Compose
-      test: ["CMD-SHELL", "pg_isready -h localhost -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-recipe} -d ${POSTGRES_DB:-recipedb}"]
       interval: 5s
       timeout: 3s
       retries: 10
+
 
   recipe-manager:
     build:
@@ -37,10 +37,11 @@ services:
         condition: service_healthy
     healthcheck:
       # NECESITĂ curl (sau wget) în imaginea aplicației
-      test: ["CMD", "curl", "-fsS", "http://localhost:8081/actuator/health/readiness"]
-      interval: 10s
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8081/actuator/health/readiness || exit 1"]
+      interval: 5s
       timeout: 3s
-      retries: 6
+      retries: 12
+      start_period: 30s # timp pt warmup+migratii Flyway
 
   prometheus:
     image: prom/prometheus:latest
