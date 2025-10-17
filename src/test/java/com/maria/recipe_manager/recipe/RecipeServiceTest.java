@@ -2,7 +2,7 @@ package com.maria.recipe_manager.recipe;
 
 import com.maria.recipe_manager.model.Difficulty;
 import com.maria.recipe_manager.model.Recipe;
-import com.maria.recipe_manager.persistence.RecipeDao;
+import com.maria.recipe_manager.persistence.old.RecipeDao;
 import com.maria.recipe_manager.service.RecipeService;
 import com.maria.recipe_manager.web.exception.NotFoundException;
 import com.maria.recipe_manager.web.recipe.CreateRecipeRequest;

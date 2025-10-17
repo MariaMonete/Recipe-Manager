@@ -1,11 +1,10 @@
-package com.maria.recipe_manager.persistence;
+package com.maria.recipe_manager.persistence.old;
 
 import com.maria.recipe_manager.model.Ingredient;
 import com.maria.recipe_manager.model.Recipe;
 import com.maria.recipe_manager.model.RecipeIngredient;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;

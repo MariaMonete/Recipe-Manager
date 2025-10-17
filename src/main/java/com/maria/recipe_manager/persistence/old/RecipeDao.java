@@ -1,4 +1,4 @@
-package com.maria.recipe_manager.persistence;
+package com.maria.recipe_manager.persistence.old;
 
 
 import com.maria.recipe_manager.model.Recipe;
@@ -29,7 +29,9 @@ public class RecipeDao {
     }
 
     public List<Recipe> findAll(){
-        return em.createQuery("select r from Recipe r order by r.id", Recipe.class).getResultList();
+        //folosim NamedQuery-ul de pe entitate
+        return em.createNamedQuery("Recipe.findAllOrdered", Recipe.class)
+                .getResultList();
     }
 
     //delete

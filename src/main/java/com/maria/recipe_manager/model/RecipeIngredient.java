@@ -7,6 +7,32 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name="recipe_ingredients")
+@NamedQuery(
+        name="RecipeIngredient.findByRecipeOrdered",
+        query= """
+                select ri
+                from RecipeIngredient ri
+                join fetch ri.ingredient ing
+                where ri.recipe.id= :r
+                order by ri.id
+        """
+)
+@NamedNativeQuery(
+        name="RecipeIngredient.byRecipeNative",
+        query= """
+            select ri.*
+            from recipe_ingredients ri
+            where ri.recipe_id= :r
+            order by ri.id
+        """,
+        resultClass =RecipeIngredient.class
+)
+@NamedNativeQuery(
+        name="RecipeIngredient.countUsageByIngredientNative",
+        query= """
+                select count(*) from recipe_ingredients where ingredient_id =:id
+        """
+)
 public class RecipeIngredient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -6,6 +6,20 @@ import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name="ingredients", uniqueConstraints = @UniqueConstraint(name="uk_ingredient_name", columnNames = "name"))
+@NamedQuery(
+        name="Ingredient.findAllOrdered",
+        query="select i from Ingredient i order by i.id"
+)
+@NamedNativeQuery(
+        name="Ingredient.findAllNative",
+        query= """
+            select *
+            from ingredients
+            where lower(name) like lower(concat('%', :name, '%'))
+            order by id
+        """,
+        resultClass = Ingredient.class
+)
 public class Ingredient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

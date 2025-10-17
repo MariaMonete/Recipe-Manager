@@ -4,7 +4,7 @@ import com.maria.recipe_manager.model.Difficulty;
 import com.maria.recipe_manager.model.Ingredient;
 import com.maria.recipe_manager.model.Recipe;
 import com.maria.recipe_manager.model.RecipeIngredient;
-import com.maria.recipe_manager.persistence.RecipeIngredientDao;
+import com.maria.recipe_manager.persistence.old.RecipeIngredientDao;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

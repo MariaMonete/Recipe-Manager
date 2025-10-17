@@ -1,4 +1,4 @@
-package com.maria.recipe_manager.persistence;
+package com.maria.recipe_manager.persistence.old;
 
 import com.maria.recipe_manager.model.Ingredient;
 import jakarta.persistence.EntityManager;
@@ -21,7 +21,8 @@ public class IngredientDao {
 
     // TODO 3: use scheduled jobs. la fiecare ora, vreau un log cu cate ingrediente ai in baza de date.
 
-    // TODO: integrare cu rabbitmq pentru primit retete noi.
+    // TODO: integrare cu rabbitmq pentru primit retete noi,
+    //  contributor in loc de actuator
 
     public Ingredient save(Ingredient i){
         em.persist(i);

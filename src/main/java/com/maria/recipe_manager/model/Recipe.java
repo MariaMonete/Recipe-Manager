@@ -13,6 +13,20 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name="recipes")
+@NamedQuery(
+        name="Recipe.findAllOrdered",
+        query="select r from Recipe r order by r.id"
+)
+@NamedNativeQuery(
+        name = "Recipe.searchByNameNative",
+        query = """
+            select *
+            from recipes
+            where lower(name) like lower(concat('%', :name, '%'))
+            order by id
+            """,
+        resultClass = Recipe.class
+)
 public class Recipe {
 
     @Id

@@ -1,8 +1,7 @@
 package com.maria.recipe_manager.ingredient;
 
 import com.maria.recipe_manager.model.Ingredient;
-import com.maria.recipe_manager.persistence.IngredientDao;
-import com.maria.recipe_manager.persistence.RecipeIngredientDao;
+import com.maria.recipe_manager.persistence.old.IngredientDao;
 import com.maria.recipe_manager.service.IngredientService;
 import com.maria.recipe_manager.web.exception.NotFoundException;
 import com.maria.recipe_manager.web.ingredient.CreateIngredientRequest;
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 public class IngredientServiceTest {
