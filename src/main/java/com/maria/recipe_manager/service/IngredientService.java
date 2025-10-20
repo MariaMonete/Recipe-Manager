@@ -4,6 +4,7 @@ import com.maria.recipe_manager.model.Ingredient;
 import com.maria.recipe_manager.persistence.old.IngredientDao;
 import com.maria.recipe_manager.persistence.old.RecipeIngredientDao;
 import com.maria.recipe_manager.persistence.repo.IngredientRepository;
+import com.maria.recipe_manager.persistence.repo.RecipeIngredientRepository;
 import com.maria.recipe_manager.web.ingredient.CreateIngredientRequest;
 import com.maria.recipe_manager.web.exception.NotFoundException;
 import com.maria.recipe_manager.web.ingredient.UpdateIngredientRequest;
@@ -15,9 +16,9 @@ import java.util.List;
 @Service
 public class IngredientService {
     private final IngredientRepository repo;
-    private final RecipeIngredientDao riRepo;
+    private final RecipeIngredientRepository riRepo;
 
-    public IngredientService(IngredientRepository repo, RecipeIngredientDao riRepo) {
+    public IngredientService(IngredientRepository repo, RecipeIngredientRepository riRepo) {
         this.repo = repo;
         this.riRepo = riRepo;
     }
@@ -41,7 +42,7 @@ public class IngredientService {
     @Transactional
     public void delete(Long id) {
         // prevenim 500 din FK restrict -> dăm 409 Conflict prietenos
-        if (riRepo.countUsageOfIngredients(id) > 0) {
+        if (riRepo.countUsageByIngredientNative(id) > 0) {
             throw new IllegalStateException("Ingredient is used by at least one recipe");
         }
         // verificăm și existența
