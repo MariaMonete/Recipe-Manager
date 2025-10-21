@@ -67,9 +67,6 @@ public class RecipeService {
     @Transactional
     public Recipe patch(Long id, PatchRecipeRequest req){
         var r=repo.findById(id).orElseThrow(()->new NotFoundException("Recipe",id));
-        if(r==null){
-            throw new NotFoundException("Recipe",id);
-        }
         //validari campuri not null
         if(req.getName()!=null){
             r.setName(req.getName().trim());

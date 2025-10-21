@@ -266,4 +266,88 @@ public class RecipeServiceTest {
         assertThat(list).containsExactlyElementsOf(expected);
         verify(repo).searchByNameNative(q);
     }
+
+    @Test
+    void create_ok_sets_all_fields_before_save() {
+        var req = new CreateRecipeRequest();
+        req.setName("Pasta");
+        req.setDifficulty(Difficulty.MEDIUM);
+        req.setCookTimeMinutes(15);
+        req.setSteps("Boil water");
+
+        when(repo.save(any())).thenAnswer(inv -> inv.getArgument(0));
+        when(repo.findById(any())).thenReturn(Optional.empty());
+
+        var out = service.create(req);
+
+        // assert că toate field-urile sunt propagate
+        assertThat(out.getName()).isEqualTo("Pasta");
+        assertThat(out.getDifficulty()).isEqualTo(Difficulty.MEDIUM);
+        assertThat(out.getCookTimeMinutes()).isEqualTo(15);
+        assertThat(out.getSteps()).isEqualTo("Boil water");
+
+        verify(repo).save(any(Recipe.class));  // << ucide cei 4 mutanți
+    }
+
+    @Test
+    void patch_throws_when_recipe_is_null() {
+        when(repo.findById(77L)).thenReturn(Optional.empty());
+
+        var req = new PatchRecipeRequest();
+        assertThatThrownBy(() -> service.patch(77L, req))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessageContaining("Recipe");
+    }
+    
+    //pe create si patch erau mutanti datorita set... asa ca am adaugat aceste teste
+    @Test
+    void create_setsAllFields_onSavedEntity() {
+        var req = new CreateRecipeRequest();
+        req.setName("Soup");
+        req.setDifficulty(Difficulty.EASY);
+        req.setCookTimeMinutes(15);
+        req.setSteps("boil,salt");
+
+        // repo.save returnează entitatea cu id ca să nu ne împiedicăm de null
+        when(repo.save(Mockito.any(Recipe.class)))
+                .thenAnswer(inv -> {
+                    Recipe r = inv.getArgument(0);
+                    r.setId(100L);
+                    return r;
+                });
+
+        service.create(req);
+
+        var captor = ArgumentCaptor.forClass(Recipe.class);
+        verify(repo).save(captor.capture());
+        var saved = captor.getValue();
+
+        assertThat(saved.getName()).isEqualTo("Soup");
+        assertThat(saved.getDifficulty()).isEqualTo(Difficulty.EASY);
+        assertThat(saved.getCookTimeMinutes()).isEqualTo(15);
+        assertThat(saved.getSteps()).isEqualTo("boil,salt");
+    }
+
+    @Test
+    void patch_updatesOnlyProvidedFields() {
+        var existing = new Recipe();
+        existing.setId(7L);
+        existing.setName("Old");
+        existing.setDifficulty(Difficulty.MEDIUM);
+        existing.setCookTimeMinutes(30);
+        existing.setSteps("a");
+
+        Mockito.when(repo.findById(7L)).thenReturn(Optional.of(existing));
+
+        var req = new PatchRecipeRequest();
+        req.setName("New");            // doar numele
+
+        var result = service.patch(7L, req);
+
+        assertThat(result.getName()).isEqualTo("New");
+        assertThat(result.getDifficulty()).isEqualTo(Difficulty.MEDIUM);
+        assertThat(result.getCookTimeMinutes()).isEqualTo(30);
+        assertThat(result.getSteps()).isEqualTo("a");
+    }
+
 }

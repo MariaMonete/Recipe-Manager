@@ -86,8 +86,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-params</artifactId>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <version>1.12.2</version>
             <scope>test</scope>
         </dependency>
 
@@ -187,6 +188,71 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!--  PITest - mutanti -->
+            <plugin>
+                <groupId>org.pitest</groupId>
+                <artifactId>pitest-maven</artifactId>
+                <version>1.17.2</version>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>org.pitest</groupId>
+                        <artifactId>pitest-junit5-plugin</artifactId>
+                        <version>1.2.1</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>org.junit.platform</groupId>
+                                <artifactId>junit-platform-commons</artifactId>
+                            </exclusion>
+                            <exclusion>
+                                <groupId>org.junit.platform</groupId>
+                                <artifactId>junit-platform-engine</artifactId>
+                            </exclusion>
+                            <exclusion>
+                                <groupId>org.junit.platform</groupId>
+                                <artifactId>junit-platform-launcher</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                </dependencies>
+
+                <configuration>
+                    <testPlugin>junit5</testPlugin>
+                    <targetClasses>
+                        <param>com.maria.recipe_manager.service.*</param>
+                    </targetClasses>
+                    <targetTests>
+                        <param>com.maria.recipe_manager.*</param>
+                    </targetTests>
+                    <mutators>
+                        <mutator>DEFAULTS</mutator>
+                    </mutators>
+
+                    <!-- DEBUG temporar, ca să nu pice build-ul când nu găsește mutații -->
+                    <failWhenNoMutations>false</failWhenNoMutations>
+
+                    <threads>1</threads>
+                    <timeoutConstant>4000</timeoutConstant>
+                    <verbose>true</verbose>
+
+                    <excludedClasses>
+                        <param>com.maria.recipe_manager.RecipeManagerApplication*</param>
+                        <param>com.maria.recipe_manager.config.*</param>
+                        <param>com.maria.recipe_manager.web.*Request*</param>
+                        <param>com.maria.recipe_manager.web.*Response*</param>
+                        <param>com.maria.recipe_manager.model.*</param>
+                        <param>db.migration.*</param>
+                    </excludedClasses>
+                    <outputFormats>
+                        <param>HTML</param>
+                        <param>XML</param>
+                    </outputFormats>
+                    <historyInputFile>${project.build.directory}/pit-history/pitHistory.txt</historyInputFile>
+                    <historyOutputFile>${project.build.directory}/pit-history/pitHistory.txt</historyOutputFile>
+                </configuration>
+            </plugin>
+
 
             <!-- asigură compilarea pe Java 21 -->
             <plugin>

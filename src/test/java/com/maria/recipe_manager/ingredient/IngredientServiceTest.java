@@ -20,6 +20,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -202,5 +203,66 @@ public class IngredientServiceTest {
         assertThat(out.getUnit()).isEqualTo("g");
         verify(repo).save(any(Ingredient.class));
     }
+
+    //teste adaugate pt ca aparea la delete:NO COVERAGE
+    @Test
+    void delete_ok_calls_repo_deleteById() {
+        when(riRepo.countUsageByIngredientNative(10L)).thenReturn(0L);
+        when(repo.existsById(10L)).thenReturn(true);
+
+        service.delete(10L);
+
+        verify(repo).deleteById(10L);  // << ucide mutantul
+    }
+
+    @Test
+    void update_ok_persistsChanges_onUnitToo() {
+        var existing = ing(1L, "Old", "g");
+        when(repo.findById(1L)).thenReturn(Optional.of(existing));
+        when(repo.existsOtherWithName(1L, "Salt")).thenReturn(false);
+        when(repo.save(any())).thenAnswer(inv -> inv.getArgument(0));
+
+        UpdateIngredientRequest req=new UpdateIngredientRequest();
+        req.setName("Salt");
+        req.setUnit("kg");
+        var out = service.update(1L, req);
+
+        assertThat(out.getName()).isEqualTo("Salt");
+        assertThat(out.getUnit()).isEqualTo("kg"); //
+        verify(repo).save(any(Ingredient.class));
+    }
+
+    @Test
+    void update_changesNameAndUnit_andSaves() {
+        var ing = new Ingredient();
+        ing.setId(5L);
+        ing.setName("old");
+        ing.setUnit("g");
+
+        Mockito.when(repo.findById(5L)).thenReturn(Optional.of(ing));
+        Mockito.when(repo.existsOtherWithName(5L, "salt")).thenReturn(false);
+        Mockito.when(repo.save(Mockito.any(Ingredient.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        var req = new UpdateIngredientRequest();
+        req.setName("salt");
+        req.setUnit("ml");
+
+        var result = service.update(5L, req);
+
+        assertThat(result.getName()).isEqualTo("salt");
+        assertThat(result.getUnit()).isEqualTo("ml");
+    }
+
+    @Test
+    void delete_happyPath_callsDeleteById() {
+        Mockito.when(repo.existsById(10L)).thenReturn(true);
+        Mockito.when(riRepo.countUsageByIngredientNative(10L)).thenReturn(0L);
+
+        service.delete(10L);
+
+        Mockito.verify(repo).deleteById(10L);
+    }
+
+
 
 }
