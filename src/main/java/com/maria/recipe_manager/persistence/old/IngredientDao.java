@@ -24,6 +24,8 @@ public class IngredientDao {
     // TODO: integrare cu rabbitmq pentru primit retete noi,
     //  contributor in loc de actuator
 
+    //TODO 5: grafana desene
+
     public Ingredient save(Ingredient i){
         em.persist(i);
         em.flush();
