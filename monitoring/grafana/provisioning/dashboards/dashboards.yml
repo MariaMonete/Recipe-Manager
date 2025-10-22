@@ -1,11 +1,12 @@
 apiVersion: 1
+
 providers:
-  - name: 'Recipe Manager Dashboards'
+  - name: "Recipe Manager Dashboards"
     orgId: 1
-    folder: ''
+    folder: "Recipe Manager"
     type: file
     disableDeletion: false
-    allowUiUpdates: true
+    editable: true
     updateIntervalSeconds: 10
     options:
-      path: /var/lib/grafana/dashboards
+      path: /etc/grafana/dashboards
