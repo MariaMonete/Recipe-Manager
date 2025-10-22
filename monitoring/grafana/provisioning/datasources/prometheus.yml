@@ -3,7 +3,6 @@ datasources:
   - name: Prometheus
     type: prometheus
     access: proxy
-    isDefault: true
     url: http://prometheus:9090
-    jsonData:
-      httpMethod: POST
+    isDefault: true
+    editable: true

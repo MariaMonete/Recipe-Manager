@@ -1,0 +1,23 @@
+groups:
+  - name: recipe-manager-alerts
+    interval: 30s
+    rules:
+      # Alerta simpla: nu vedem nicio observatie pentru metric timp de 1h
+      - alert: IngredientCountMissing
+        expr: absent(recipe_manager_ingredient_count) == 1
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "Ingredient gauge missing"
+          description: "Prometheus nu observa metricul recipe_manager_ingredient_count de 1h."
+
+      # Alerta prag: scadere brusca (exemplu)
+      - alert: IngredientCountDrop
+        expr: (delta(recipe_manager_ingredient_count[2h]) < 0)
+        for: 30m
+        labels:
+          severity: info
+        annotations:
+          summary: "Ingredient count a scazut"
+          description: "Valoarea a scazut in ultimele 2 ore."

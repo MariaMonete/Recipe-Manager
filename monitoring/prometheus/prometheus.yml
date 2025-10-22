@@ -1,0 +1,15 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  scrape_timeout: 10s
+  external_labels:
+    job: recipe-manager-stack
+
+scrape_configs:
+  - job_name: "recipe-manager"
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ["recipe-manager:8081"]
+
+rule_files:
+  - /etc/prometheus/rules.yml
