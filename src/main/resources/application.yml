@@ -29,6 +29,18 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
 
+  rabbitmq:
+    host: rabbitmq     # numele serviciului din docker-compose
+    port: 5672
+    username: guest
+    password: guest
+
+    # confirmări și return-uri pentru livrare sigură
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    template:
+      mandatory: true
+
 management:
   endpoints:
     web:

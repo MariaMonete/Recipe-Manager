@@ -32,9 +32,15 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://pg_recipe:5432/${POSTGRES_DB:-recipedb}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-recipe}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-recipe}
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
     depends_on:
       postgres:
         condition: service_healthy
+      rabbitmq:
+        condition: service_started
     healthcheck:
       # NECESITĂ curl (sau wget) în imaginea aplicației
       test: ["CMD-SHELL", "curl -fsS http://localhost:8081/actuator/health/readiness || exit 1"]
@@ -75,6 +81,15 @@ services:
       - prometheus
     restart: unless-stopped
 
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: rm_rabbit
+    ports:
+      - "5672:5672"     # portul protocolului AMQP
+      - "15672:15672"   # interfața web (management UI)
+    environment:
+      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: "-rabbit disk_free_limit 1073741824"
+    restart: unless-stopped
 
 volumes:
   pgdata_recipe:
