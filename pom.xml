@@ -194,7 +194,6 @@
                 <groupId>org.pitest</groupId>
                 <artifactId>pitest-maven</artifactId>
                 <version>1.17.2</version>
-
                 <dependencies>
                     <dependency>
                         <groupId>org.pitest</groupId>
