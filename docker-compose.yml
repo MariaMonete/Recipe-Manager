@@ -63,6 +63,7 @@ services:
       - prom_data:/prometheus
     depends_on:
       - recipe-manager
+      - rabbitmq
     restart: unless-stopped
 
   grafana:
