@@ -6,6 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IngredientRepository extends CrudRepository<Ingredient,Long> {
    //1) namedquery din model
@@ -30,4 +31,6 @@ public interface IngredientRepository extends CrudRepository<Ingredient,Long> {
         where lower(i.name) = lower(:name) and i.id <> :id
     """)
     boolean existsOtherWithName(@Param("id") Long id, @Param("name") String name);
+
+    Optional<Ingredient> findByNameIgnoreCase(String name);
 }

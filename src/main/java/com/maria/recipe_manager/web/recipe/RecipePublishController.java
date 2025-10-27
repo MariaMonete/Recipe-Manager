@@ -5,6 +5,7 @@ import com.maria.recipe_manager.messaging.model.RecipeCreatedEvent;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -35,8 +36,8 @@ public class RecipePublishController {
                 25,
                 "Boil pasta; saute veggies; mix.",
                 List.of(
-                        new RecipeCreatedEvent.IngredientItem("Pasta", 200, "g"),
-                        new RecipeCreatedEvent.IngredientItem("Peas", 50, "g")
+                        new RecipeCreatedEvent.IngredientItem("Pasta", new BigDecimal("200.00"), "g"),
+                        new RecipeCreatedEvent.IngredientItem("Peas", new BigDecimal("200.00"), "g")
                 )
         );
     }

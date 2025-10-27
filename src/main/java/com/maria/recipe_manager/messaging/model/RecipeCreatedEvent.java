@@ -1,5 +1,6 @@
 package com.maria.recipe_manager.messaging.model;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -32,8 +33,14 @@ public record RecipeCreatedEvent(
 
     public record IngredientItem(
             String name,
-            Number quantity,
+            BigDecimal quantity,
             String unit
+    ) {}
+
+    public record RecipeIngredientPayload(
+            String name,
+            String unit,
+            BigDecimal quantity
     ) {}
 }
 

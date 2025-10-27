@@ -91,6 +91,7 @@ services:
       RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: "-rabbit disk_free_limit 1073741824"
     restart: unless-stopped
 
+
 volumes:
   pgdata_recipe:
   prom_data:

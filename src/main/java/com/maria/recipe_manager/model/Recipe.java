@@ -12,7 +12,10 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="recipes")
+@Table(name="recipes",
+        indexes = {
+                @Index(name = "ux_recipes_external_id", columnList = "external_id", unique = true)
+        })
 @NamedQuery(
         name="Recipe.findAllOrdered",
         query="select r from Recipe r order by r.id"
@@ -51,6 +54,9 @@ public class Recipe {
     @Column(name="created_at",nullable=false,insertable=false,updatable=false)
     private Instant createdAt;
 
+    @Column(name = "external_id", unique = true)
+    private String externalId;
+
     //getteri si setteri
     public Long getId(){return id;}
     public void setId(Long id) {this.id=id;}
@@ -70,4 +76,6 @@ public class Recipe {
     public Instant getCreatedAt() { return createdAt; }
     public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
 
+    public String getExternalId() {return externalId;}
+    public void setExternalId(String externalId) {this.externalId = externalId;}
 }

@@ -55,4 +55,6 @@ public interface RecipeIngredientRepository extends CrudRepository<RecipeIngredi
     @Query("update RecipeIngredient ri set ri.quantity = :q where ri.id = :id")
     void updateQuantity(@Param("id") Long riId, @Param("q") BigDecimal quantity);
 
+    Optional<RecipeIngredient> findByRecipeIdAndIngredientId(Long recipeId, Long ingredientId);
+
 }
